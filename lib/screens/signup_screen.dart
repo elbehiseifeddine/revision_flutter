@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -15,6 +17,9 @@ class _SignUpState extends State<SignUp> {
   late String _email;
   late String _naissance;
   late String _adresse;
+
+  final String _baseUrl = "10.0.2.2:9090";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,7 +161,36 @@ class _SignUpState extends State<SignUp> {
                     onPressed: () {
                       if (_keyForm.currentState!.validate()) {
                         _keyForm.currentState!.save();
-                        Navigator.pushReplacementNamed(context, '/navbar');
+                        Map<String, dynamic> userData = {
+                          "username": _username,
+                          "password": _password,
+                          "email": _email,
+                          "birth": _naissance,
+                          "address": _adresse
+                        };
+
+                        Map<String, String> headers = {
+                          "Content-Type": "application/json; charset=UTF-8"
+                        };
+
+                        http
+                            .post(Uri.http(_baseUrl, "/user/signup"),
+                                headers: headers, body: json.encode(userData))
+                            .then((http.Response response) {
+                          if (response.statusCode == 201) {
+                            Navigator.pushReplacementNamed(context, "/signIn");
+                          } else {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return const AlertDialog(
+                                    title: Text("Information"),
+                                    content: Text(
+                                        "Une erreur s'est produite. Veuillez réessayer !"),
+                                  );
+                                });
+                          }
+                        });
                       }
                     },
                     child: const Text(
@@ -167,7 +201,9 @@ class _SignUpState extends State<SignUp> {
                     width: 20.0,
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, '/signIn');
+                    },
                     child: const Text(
                       "Annuler",
                     ),
