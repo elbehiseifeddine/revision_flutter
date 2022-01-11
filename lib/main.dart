@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rev/screens/navbar_holder.dart';
 import 'package:rev/screens/panier.dart';
+import 'package:rev/screens/reset_password.dart';
 import 'package:rev/screens/signin_screen.dart';
 import 'package:rev/screens/spash_screen.dart';
 import 'package:rev/screens/store.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         '/signUp': (context) => SignUp(),
         '/navbar': (context) => NavBar(),
         '/signIn': (context) => Signin(),
+        '/resetPwd': (context) => ResetPassword(),
       },
     );
   }

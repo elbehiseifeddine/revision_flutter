@@ -13,7 +13,7 @@ class SpalshScreen extends StatefulWidget {
 class _SpalshScreenState extends State<SpalshScreen> {
   late Future<bool> _session;
   late String route;
-
+  bool isLoading = false;
   Future<bool> _verifySession() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // prefs.remove("userId");
@@ -23,7 +23,6 @@ class _SpalshScreenState extends State<SpalshScreen> {
     } else {
       route = "/signIn";
     }
-
     return true;
   }
 
@@ -38,13 +37,7 @@ class _SpalshScreenState extends State<SpalshScreen> {
     return FutureBuilder(
       future: _session,
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-        if (snapshot.hasData) {
-          if (route == "/navbar") {
-            return const NavBar();
-          } else {
-            return const Signin();
-          }
-        } else {
+        if (!snapshot.hasData) {
           return Scaffold(
             appBar: AppBar(
               title: const Text("G-Store ESPRIT"),
@@ -53,6 +46,12 @@ class _SpalshScreenState extends State<SpalshScreen> {
               child: CircularProgressIndicator(),
             ),
           );
+        } else {
+          if (route == "/navbar") {
+            return const NavBar();
+          } else {
+            return const Signin();
+          }
         }
       },
     );
